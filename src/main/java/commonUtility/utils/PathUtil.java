@@ -8,7 +8,7 @@ package commonUtility.utils;
  * @since JDK1.8
  */
 public class PathUtil {
-    public static String getCurrentPath() {
+    public static String getSystemHomeDir() {
         return System.getProperty("user.dir");
     }
 }

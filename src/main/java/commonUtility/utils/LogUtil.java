@@ -23,7 +23,7 @@ public class LogUtil {
     public static void initLog4jBase() {
         if (System.getProperty("log.base") == null) {
             // 默认是当前目录下
-            String projectPath = PathUtil.getCurrentPath();
+            String projectPath = PathUtil.getSystemHomeDir();
             initLog4jBase(projectPath);
         }
     }
