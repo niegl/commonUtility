@@ -1,8 +1,7 @@
 package commonUtility.utils;
 
 import commonUtility.log.IPlusLogger;
-import commonUtility.log.PlusLogger;
-import org.apache.log4j.Logger;
+import commonUtility.log.PlusLoggerFactory;
 
 /**
  * @author suisui
@@ -12,24 +11,10 @@ import org.apache.log4j.Logger;
  * @since JavaFX2.0 JDK1.8
  */
 public class LogUtil {
-    private static final String FQCN = LogUtil.class.getName();
     private static IPlusLogger logger;
 
     static {
-        initLog4jBase();
-        logger = new PlusLogger(FQCN, Logger.getLogger(LogUtil.class));
-    }
-
-    public static void initLog4jBase() {
-        if (System.getProperty("log.base") == null) {
-            // 默认是当前目录下
-            String projectPath = PathUtil.getSystemHomeDir();
-            initLog4jBase(projectPath);
-        }
-    }
-
-    public static void initLog4jBase(String base) {
-        System.setProperty("log.base", base);
+        logger = PlusLoggerFactory.getLogger(LogUtil.class);
     }
 
     public static void debug(Object message) {

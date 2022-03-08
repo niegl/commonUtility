@@ -1,13 +1,5 @@
 package commonUtility.log;
 
-
-/**
- * @author suisui
- * @version 1.2
- * @description 日志接口
- * @date 2020/5/1 10:54
- * @since JavaFX2.0 JDK1.8
- */
 public interface IPlusLogger {
     void debug(Object message);
 
