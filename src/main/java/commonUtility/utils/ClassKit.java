@@ -16,10 +16,10 @@ import java.util.jar.JarFile;
  * @date 2019/6/25 5:20
  * @since JavaFX2.0 JDK1.8
  */
-public class ClassUtil {
+public class ClassKit {
     private ClassLoader classLoader;
 
-    public ClassUtil() {
+    public ClassKit() {
         classLoader = getClass().getClassLoader();
     }
 
@@ -31,9 +31,9 @@ public class ClassUtil {
      * @return 所有FXController的类名列表
      */
     private List<String> getAllFXControllerClassName(String base, List<String> nameList) throws UnsupportedEncodingException {
-        String splashPath = StringUtil.dotToSplash(base);
+        String splashPath = StringKit.dotToSplash(base);
         URL url = classLoader.getResource(splashPath);
-        String filePath = StringUtil.getRootPath(url);
+        String filePath = StringKit.getRootPath(url);
         List<String> names = null;
         if (filePath.endsWith("jar")) {
             nameList = readFromJarDirectory(filePath, base);
@@ -57,7 +57,7 @@ public class ClassUtil {
     private static String toFullyQualifiedName(String shortName, String basePackage) {
         StringBuilder sb = new StringBuilder(basePackage);
         sb.append('.');
-        sb.append(StringUtil.trimExtension(shortName));
+        sb.append(StringKit.trimExtension(shortName));
         return sb.toString();
     }
 
@@ -95,7 +95,7 @@ public class ClassUtil {
                 if (packageNameIndex == -1) continue;
                 String baseName = jarEntry.getName().substring(0, packageNameIndex);
                 if (baseName.equals(packageName)) {
-                    classNames.add(StringUtil.trimExtension(jarEntry.getName()).replaceAll("/", "."));
+                    classNames.add(StringKit.trimExtension(jarEntry.getName()).replaceAll("/", "."));
                 }
             }
         }

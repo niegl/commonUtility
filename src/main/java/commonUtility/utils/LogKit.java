@@ -10,11 +10,11 @@ import commonUtility.log.PlusLoggerFactory;
  * @date 2020/5/1 10:54
  * @since JavaFX2.0 JDK1.8
  */
-public class LogUtil {
+public class LogKit {
     private static IPlusLogger logger;
 
     static {
-        logger = PlusLoggerFactory.getLogger(LogUtil.class);
+        logger = PlusLoggerFactory.getLogger(LogKit.class);
     }
 
     public static void debug(Object message) {

@@ -1,12 +1,14 @@
 package commonUtility.utils;
 
 
-import commonUtility.exception.ProtocolNotSupport;
 import commonUtility.log.IPlusLogger;
 import commonUtility.log.PlusLoggerFactory;
 import org.apache.commons.io.IOUtils;
 
 import java.io.*;
+import java.util.Enumeration;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 /**
  * @author jack
@@ -14,21 +16,8 @@ import java.io.*;
  * @date 2019/6/25 7:01
  * @since JavaFX2.0 JDK1.8
  */
-public class FileUtil {
-    private static final IPlusLogger logger = PlusLoggerFactory.getLogger(FileUtil.class);
-
-    /**
-     * @param filePath
-     * @return 返回URL
-     * @throws ProtocolNotSupport
-     * @decription 从resources文件夹中读取File
-     * 输出如：    file:/Users/suisui/workspace/Idea/JavaFX-Plus/target/classes/image/icon.png
-     * @version 1.0
-     */
-    public InputStream getFilePathFromResources(String filePath) throws ProtocolNotSupport {
-        return FileUtil.class.getResourceAsStream(filePath);
-    }
-
+public class FileKit {
+    private static final IPlusLogger logger = PlusLoggerFactory.getLogger(FileKit.class);
 
     /**
      * @param filePath
@@ -37,7 +26,7 @@ public class FileUtil {
      * @since 1.2.0 update: 使用getResourcesAsStream读取，屏蔽jar包读取障碍
      */
     public static String readFileFromResources(String filePath) throws UnsupportedEncodingException {
-        InputStream is = FileUtil.class.getClassLoader().getResourceAsStream(filePath);
+        InputStream is = FileKit.class.getClassLoader().getResourceAsStream(filePath);
         if (is == null) {
             return "";
         }
@@ -56,6 +45,43 @@ public class FileUtil {
             logger.error("reading file error", e);
         } finally {
             IOUtils.closeQuietly(is);
+        }
+        return "";
+    }
+
+    /**
+     * 从jar包中读取指定文件的内容.
+     * @param path jar包文件的路径
+     * @param innerFile jar包内部文件名
+     * @return 文件内容
+     */
+    public static String readFileFromJar(String path, String innerFile) {
+        JarFile jarFile = null;
+        try {
+            jarFile = new JarFile(path);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if (jarFile == null) return "";
+
+        Enumeration<JarEntry> entrys = jarFile.entries();
+        while (entrys.hasMoreElements()) {
+            JarEntry jarEntry = entrys.nextElement();
+            if (!jarEntry.getName().endsWith(innerFile)) continue;
+
+            StringBuilder stringBuilder = new StringBuilder();
+            try {
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(jarFile.getInputStream(jarEntry)));
+                String line;
+                while ((line = bufferedReader.readLine()) != null ) {
+                    stringBuilder.append(line);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return stringBuilder.toString();
         }
         return "";
     }

@@ -1,6 +1,6 @@
 package commonUtility.log;
 
-import commonUtility.utils.PathUtil;
+import commonUtility.utils.PathKit;
 import org.apache.log4j.*;
 
 /**
@@ -29,7 +29,7 @@ public class PlusLoggerFactory {
         appender.setLayout(layout);
         // log输出路径
         // 这里使用了环境变量[catalina.home]，只有在tomcat环境下才可以取到
-        String homeDir = PathUtil.getSystemHomeDir();
+        String homeDir = PathKit.getSystemHomeDir();
         appender.setFile(homeDir + "/logs/" + clazz.getSimpleName() + ".log");
         // log的文字码
         appender.setEncoding("UTF-8");

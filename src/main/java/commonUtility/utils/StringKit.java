@@ -17,10 +17,10 @@ import java.net.URLDecoder;
  * @since JavaFX2.0 JDK1.8
  * @since 1.3.0 add：继承StringUtils
  */
-public class StringUtil extends StringUtils {
-    private static IPlusLogger logger = PlusLoggerFactory.getLogger(StringUtil.class);
+public class StringKit extends StringUtils {
+    private static IPlusLogger logger = PlusLoggerFactory.getLogger(StringKit.class);
 
-    private StringUtil() {
+    private StringKit() {
     }
 
     /**
@@ -144,9 +144,9 @@ public class StringUtil extends StringUtils {
         String result = "";
         String[] tempStrs = name.split("/");
         if (1 == tempStrs.length) { //只有文件名，即name: langDemo.fxml
-            result = StringUtil.trimExtension(name);
+            result = StringKit.trimExtension(name);
         } else {
-            result = StringUtil.trimExtension(tempStrs[tempStrs.length - 1]);
+            result = StringKit.trimExtension(tempStrs[tempStrs.length - 1]);
         }
         return result;
     }
