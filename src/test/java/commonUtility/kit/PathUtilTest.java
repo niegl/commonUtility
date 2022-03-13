@@ -1,4 +1,4 @@
-package commonUtility.utils;
+package commonUtility.kit;
 
 class PathUtilTest {
 

@@ -1,4 +1,4 @@
-package commonUtility.utils;
+package commonUtility.kit;
 
 import java.io.File;
 import java.io.IOException;

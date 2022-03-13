@@ -1,6 +1,6 @@
 package commonUtility.log;
 
-import commonUtility.utils.LogKit;
+import commonUtility.kit.LogKit;
 import org.junit.jupiter.api.Test;
 
 class IPlusLoggerTest {

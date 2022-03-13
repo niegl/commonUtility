@@ -1,4 +1,4 @@
-package commonUtility.utils;
+package commonUtility.constant;
 
 /**
  * @author suisui
