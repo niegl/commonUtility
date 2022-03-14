@@ -1,5 +1,7 @@
 package commonUtility.kit;
 
+import commonUtility.file.FileKit;
+
 class DriverClassFinderTest {
     @org.junit.jupiter.api.Test
     void readFromJarFile() {

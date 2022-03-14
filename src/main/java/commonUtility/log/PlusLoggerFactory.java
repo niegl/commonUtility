@@ -1,6 +1,6 @@
 package commonUtility.log;
 
-import commonUtility.kit.PathKit;
+import commonUtility.file.PathKit;
 import org.apache.log4j.*;
 
 /**

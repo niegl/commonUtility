@@ -1,4 +1,4 @@
-package commonUtility.kit;
+package commonUtility.file;
 
 import commonUtility.exception.ProtocolNotSupport;
 

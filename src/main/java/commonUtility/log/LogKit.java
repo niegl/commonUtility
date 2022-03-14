@@ -1,7 +1,4 @@
-package commonUtility.kit;
-
-import commonUtility.log.IPlusLogger;
-import commonUtility.log.PlusLoggerFactory;
+package commonUtility.log;
 
 /**
  * @author suisui
