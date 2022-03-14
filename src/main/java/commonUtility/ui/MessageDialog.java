@@ -32,7 +32,6 @@ public final class MessageDialog {
         alert.setTitle("确认");
         alert.setHeaderText(p_header);
         alert.setContentText(p_message);
-        alert.initOwner(GUIState.getStage());
         // showAndWait() 将在对话框消失以前不会执行之后的代码
         Optional<ButtonType> _buttonType = alert.showAndWait();
         if(_buttonType.get().getButtonData().equals(ButtonBar.ButtonData.YES)){
@@ -46,10 +45,19 @@ public final class MessageDialog {
     //    弹出一个信息对话框
     public static void informationDialog(String p_header, String p_message){
         Alert _alert = createAlert(Alert.AlertType.INFORMATION);
-        _alert.setTitle("信息");
+        _alert.setTitle("提示框");
         _alert.setHeaderText(p_header);
         _alert.setContentText(p_message);
         _alert.initOwner(GUIState.getStage());
-        _alert.show();
+        _alert.showAndWait();
+    }
+
+    public static void errorDialog(String p_header, String p_message){
+        Alert _alert = createAlert(Alert.AlertType.ERROR);
+        _alert.setTitle("错误");
+        _alert.setHeaderText(p_header);
+        _alert.setContentText(p_message);
+        _alert.initOwner(GUIState.getStage());
+        _alert.showAndWait();
     }
 }
