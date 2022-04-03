@@ -14,9 +14,27 @@ public class SkinLoader {
      * @return
      * @throws IOException
      */
-    public static <T> Pair<FXMLLoader, T> loadFxml(String fxml, Object controller) throws IOException {
+    public static <T> Pair<FXMLLoader, T> loadFxml(String fxml, Object controller) {
         FXMLLoader loader = new FXMLLoader(SkinLoader.class.getResource(fxml));
         loader.setController(controller);
-        return Pair.with(loader,loader.load());
+        try {
+            return Pair.with(loader,loader.load());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
+
+    public static <T> T loadFxml(String fxml) {
+        T root = null;
+        FXMLLoader loader = new FXMLLoader(SkinLoader.class.getResource(fxml));
+        try {
+            root = loader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return root;
+    }
+
 }
