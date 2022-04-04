@@ -35,7 +35,7 @@ public class DragListener {
     /**
      * 功能：在特定对象drag上启用拖放功能，启用后才能进行拖动。
      * @param drag  拖动对象
-     * @param funCallback 拖放完成后进行回调。其中Point2D为目标点坐标.
+     * @param dragDoneCallback 拖放完成后进行回调。其中Point2D为目标点坐标.
      */
     public static void enableDrag(Node drag, TriConsumer<DragEvent, Point2D, Node> dragDoneCallback) {
         // 开始拖动源控件
@@ -83,8 +83,6 @@ public class DragListener {
 
     /**
      * 功能：实现放的功能。
-     * @param funCallback
-     * @param dropTarget  放置目标，可变对象.
      */
     public static void enableDrop(Node drop) {
         drop.setOnDragEntered(dragEvent -> {
