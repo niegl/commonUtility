@@ -7,6 +7,7 @@ import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
+import javafx.scene.layout.AnchorPane;
 import lombok.Getter;
 
 /**
@@ -69,6 +70,10 @@ public class DragListener {
             if (dragEvent.getTransferMode() == TransferMode.MOVE ) {
                 // 由于拖动起始点的鼠标位置不可能准确的在左上角，所以move完成需要对位置进行修正，
                 leftTopPoint = new Point2D(dropPoint.getX()-offsetX, dropPoint.getY()-offsetY);
+                if (dropTarget instanceof AnchorPane) {
+                    AnchorPane.setLeftAnchor(drag, leftTopPoint.getX());
+                    AnchorPane.setTopAnchor(drag, leftTopPoint.getY());
+                }
             } else if (dragEvent.getTransferMode() == TransferMode.COPY) {
                 // copy不需要修正：放置的开始位置就是鼠标位置。
             }
