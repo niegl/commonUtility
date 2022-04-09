@@ -89,7 +89,7 @@ public class DragListener {
     /**
      * 功能：实现放的功能。
      */
-    public static void enableDrop(Node drop) {
+    public static void enableDrop(Node drop, Node dropTarget) {
         drop.setOnDragEntered(dragEvent -> {
             /* 拖放手势进入目标，提示客户它是一个真实的手势目标 */
             if (dragEvent.getGestureSource() != drop && dragEvent.getDragboard().hasString()) {
@@ -134,7 +134,7 @@ public class DragListener {
             Dragboard dragboard = dragEvent.getDragboard();
             if (dragboard.hasString()) {
                 success = true;
-                dropTarget = drop;
+                DragListener.dropTarget = dropTarget;
             }
 
             dropPoint = new Point2D(dragEvent.getX(),dragEvent.getY());

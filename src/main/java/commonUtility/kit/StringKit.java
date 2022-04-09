@@ -242,6 +242,14 @@ public class StringKit extends StringUtils {
         return str == null ? null : str.replaceAll("^\\\\s+", "");
     }
 
+    public static String ltrim(String str, String prefix) {
+        if(str == null) return null;
+        while(str.startsWith(prefix)) {
+            str = str.substring(1);
+        }
+        return str;
+    }
+
     public static String rtrim(String str) {
         return str == null ? null : str.replaceAll("\\\\s+$", "");
     }
