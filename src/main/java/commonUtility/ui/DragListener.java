@@ -55,7 +55,7 @@ public class DragListener {
             offsetX = mouseEvent.getX();
             offsetY = mouseEvent.getY();
 
-            mouseEvent.consume();
+//            mouseEvent.consume();
         });
 
         /**
