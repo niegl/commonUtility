@@ -72,9 +72,14 @@ public class TabToolbar extends HBox {
      */
     AnchorPane ttb_customContent;
     SplitPane splitPane;
+    /**
+     * 方向。0=左；1=右
+     */
+    int orientation = 0;
 
 
-    public TabToolbar() {
+    public TabToolbar(int orientation) {
+        this.orientation = orientation;
         initialize();
     }
 
@@ -136,13 +141,14 @@ public class TabToolbar extends HBox {
         SplitPane.setResizableWithParent(ttb_splitLeft, Boolean.FALSE);
         SplitPane.setResizableWithParent(ttb_splitLeft, Boolean.FALSE);
         ttb_customContent = new AnchorPane();
-        splitPane = new SplitPane(ttb_splitLeft, ttb_customContent);
+        splitPane = orientation==0? new SplitPane(ttb_splitLeft, ttb_customContent)
+                :new SplitPane(ttb_customContent, ttb_splitLeft) ;
 
         HBox.setHgrow(splitPane,Priority.ALWAYS);
-        splitPane.setDividerPositions(0.3d);
+//        splitPane.setDividerPositions(0.3d);
 
-        this.getChildren().add(vBox);
-        this.getChildren().add(splitPane);
+        boolean b = orientation == 0 ? this.getChildren().addAll(vBox, splitPane)
+                : this.getChildren().addAll(splitPane, vBox);
 
         labelMinimize.setOnMouseClicked(event -> {
             AnchorPane anchorPane = items.get(currentToolbar);
@@ -221,7 +227,7 @@ public class TabToolbar extends HBox {
             }
             ttb_treePlaceholder.getChildren().clear();
             ttb_treePlaceholder.getChildren().add(item);
-            splitPane.getItems().add(0, ttb_splitLeft);
+            splitPane.getItems().add(orientation==0?0:1, ttb_splitLeft);
 
             AnchorPane.setLeftAnchor(item, 0d);
             AnchorPane.setRightAnchor(item, 0d);
@@ -236,7 +242,7 @@ public class TabToolbar extends HBox {
         // 如果当前显示工具栏就是label，那么隐藏工具栏
         else {
             toolbarPositions.put(label, dividerPosition);
-            splitPane.setDividerPositions(0d);
+            splitPane.setDividerPositions(orientation==0?1d:0d);
             currentToolbar = null;
         }
 
