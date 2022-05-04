@@ -1,6 +1,5 @@
 package commonUtility.ui;
 
-import commonUtility.consumer.TriConsumer;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
@@ -15,18 +14,18 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import org.apache.commons.lang3.function.TriFunction;
 import org.javatuples.Pair;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.InputStream;
-import java.util.function.BinaryOperator;
 
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 
 public class PivotZoom {
 
-    private static Pair<StackPane, Pane> createContent(double width, double height, TriConsumer<MouseEvent, Node, Point2D> dragCallback) {
+    private static Pair<StackPane, Pane> createContent(double width, double height, TriFunction<MouseEvent, Node, Point2D, Boolean> dragCallback) {
 
 //        final Canvas[] canvas = {createBackdrop(width, height)};
         InputStream BIAsStream = PivotZoom.class.getResourceAsStream("/背景.png");
@@ -55,7 +54,7 @@ public class PivotZoom {
             Node n = (Node) evt.getTarget();
             if (n != content) {
                 if (dragCallback != null) {
-                    dragCallback.accept(evt, n, new Point2D(evt.getX(), evt.getY()));
+                    Boolean processed = dragCallback.apply(evt, n, new Point2D(evt.getX(), evt.getY()));
                 }
                 // initiate drag gesture, if a child of content receives the
                 // event to prevent ScrollPane from panning.
@@ -87,20 +86,16 @@ public class PivotZoom {
             // 鼠标释放后，根据全部子控件边界计算整体边界，根据计算出的边界重绘背景.
             BoundingBox reduceBounding = content.getChildren().parallelStream().map(c -> {
                 Bounds bounds = c.getLayoutBounds();
-                double layoutX = c instanceof Circle? ((Circle)c).getLayoutX()-((Circle)c).getRadius():c.getLayoutX();
-                double layoutY = c instanceof Circle? ((Circle)c).getLayoutY()-((Circle)c).getRadius():c.getLayoutY();
+                double layoutX = c instanceof Circle? c.getLayoutX()-((Circle)c).getRadius():c.getLayoutX();
+                double layoutY = c instanceof Circle? c.getLayoutY()-((Circle)c).getRadius():c.getLayoutY();
                 return new BoundingBox(layoutX, layoutY,
                         layoutX + bounds.getWidth(), layoutY + bounds.getHeight());
-            }).reduce(new BoundingBox(Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MIN_VALUE, Integer.MIN_VALUE), new BinaryOperator<BoundingBox>() {
-                @Override
-                public BoundingBox apply(BoundingBox boundingBox, BoundingBox boundingBox2) {
-                    return new BoundingBox(Math.min(boundingBox.getMinX(), boundingBox2.getMinX()),
+            }).reduce(new BoundingBox(Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MIN_VALUE, Integer.MIN_VALUE), (boundingBox, boundingBox2) ->
+                    new BoundingBox(Math.min(boundingBox.getMinX(), boundingBox2.getMinX()),
                             Math.min(boundingBox.getMinY(), boundingBox2.getMinY()),
                             Math.max(boundingBox.getWidth(), boundingBox2.getWidth()),
                             Math.max(boundingBox.getHeight(), boundingBox2.getHeight())
-                    );
-                }
-            });
+            ));
 
             // 考虑子对象不位于边界的情况，计算出来的宽度可能小于需要的宽度
             double reduceWidth = reduceBounding.getWidth() - min(reduceBounding.getMinX(),0);
@@ -116,7 +111,7 @@ public class PivotZoom {
             if (dragCallback != null) {
                 double layoutX = evt.getX() + dragData.startLayoutX - dragData.startX;
                 double layoutY = evt.getY() + dragData.startLayoutY - dragData.startY;
-                dragCallback.accept(evt, dragData.dragTarget, new Point2D(layoutX, layoutY));
+                dragCallback.apply(evt, dragData.dragTarget, new Point2D(layoutX, layoutY));
             }
 
             dragData.dragTarget = null;
@@ -127,12 +122,17 @@ public class PivotZoom {
                 // move dragged node
                 double layoutX = evt.getX() + dragData.startLayoutX - dragData.startX;
                 double layoutY = evt.getY() + dragData.startLayoutY - dragData.startY;
+                if (dragCallback != null) {
+                    Boolean processed = dragCallback.apply(evt, dragData.dragTarget, new Point2D(layoutX, layoutY));
+                    // 如果已经处理过，那么就不需要在处理了
+                    if (processed) {
+                        evt.consume();
+                        return;
+                    }
+                }
                 dragData.dragTarget.setLayoutX(layoutX);
                 dragData.dragTarget.setLayoutY(layoutY);
 
-                if (dragCallback != null) {
-                    dragCallback.accept(evt, dragData.dragTarget, new Point2D(layoutX, layoutY));
-                }
                 evt.consume();
             }
         });
@@ -164,7 +164,7 @@ public class PivotZoom {
         return canvas;
     }
 
-    public static Pair<ScrollPane, Pane> createPivotZoom(double width, double height, TriConsumer<MouseEvent, Node, Point2D> dragCallback) {
+    public static Pair<ScrollPane, Pane> createPivotZoom(double width, double height, TriFunction<MouseEvent, Node, Point2D, Boolean> dragCallback) {
         Pair<StackPane, Pane> pairZoom = createContent(width,height,dragCallback);
         StackPane zoomTarget = pairZoom.getValue0();
         Pane pairContent = pairZoom.getValue1();
@@ -202,7 +202,7 @@ public class PivotZoom {
             if (evt.isControlDown()) {
                 evt.consume();
 
-                final double zoomFactor = evt.getDeltaY() > 0 ? 1.2 : 1 / 1.2;
+                final double zoomFactor = evt.getDeltaY() > 0 ? 1.05 : 1 / 1.05;
 
                 Bounds groupBounds = group.getLayoutBounds();
                 final Bounds viewportBounds = scrollPane.getViewportBounds();

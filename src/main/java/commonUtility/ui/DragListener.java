@@ -27,7 +27,7 @@ public class DragListener {
      * 控件拖动后将要放置到哪个控件上
       */
     @Getter
-    private static Node dropTarget;
+    private static Object dropTarget;
     /**
      * 鼠标释放点的坐标值
       */
@@ -38,7 +38,7 @@ public class DragListener {
      * @param drag  拖动对象
      * @param dragDoneCallback 拖放完成后进行回调。其中Point2D为目标点坐标.
      */
-    public static void enableDrag(Node drag, TriConsumer<DragEvent, Point2D, Node> dragDoneCallback) {
+    public static void enableDrag(Node drag, TriConsumer<DragEvent, Point2D, Object> dragDoneCallback) {
         // 开始拖动源控件
         drag.setOnDragDetected(mouseEvent -> {
             Dragboard dragboard = drag.startDragAndDrop(TransferMode.COPY_OR_MOVE);
@@ -88,8 +88,10 @@ public class DragListener {
 
     /**
      * 功能：实现放的功能。
+     * @param drop 目标事件响应对象
+     * @param dropTarget
      */
-    public static void enableDrop(Node drop, Node dropTarget) {
+    public static void enableDrop(Node drop, Object dropTarget) {
         drop.setOnDragEntered(dragEvent -> {
             /* 拖放手势进入目标，提示客户它是一个真实的手势目标 */
             if (dragEvent.getGestureSource() != drop && dragEvent.getDragboard().hasString()) {
