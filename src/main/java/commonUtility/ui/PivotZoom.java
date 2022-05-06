@@ -104,8 +104,8 @@ public class PivotZoom {
             double maxWidth = max(width, reduceWidth);
             double maxHeight = max(height, reduceHeight);
             if (maxWidth != content.getWidth() || maxHeight != content.getHeight()) {
-                content.setMinWidth(maxWidth);
-                content.setMinHeight(maxHeight);
+                content.setMinWidth(maxWidth + 50); // 预留50个宽度
+                content.setMinHeight(maxHeight + 50);// 预留50个宽度
                 content.autosize();
             }
             if (dragCallback != null) {
