@@ -67,7 +67,7 @@ public class PivotZoom {
             Node n = (Node) evt.getTarget();
             if (n != content) {
                 // set start paremeters
-                while (n.getParent() != content) {
+                while (n.getParent() != content && n.getParent().getClass() != Group.class) {
                     n = n.getParent();
                 }
                 dragData.startX = evt.getX();
@@ -120,10 +120,12 @@ public class PivotZoom {
         content.setOnMouseDragged(evt -> {
             if (dragData.dragTarget != null) {
                 // move dragged node
-                double layoutX = evt.getX() + dragData.startLayoutX - dragData.startX;
-                double layoutY = evt.getY() + dragData.startLayoutY - dragData.startY;
+                double deltaX = evt.getX() - dragData.startX;
+                double deltaY = evt.getY() - dragData.startY;
+                double layoutX = dragData.startLayoutX + deltaX;
+                double layoutY = dragData.startLayoutY + deltaY;
                 if (dragCallback != null) {
-                    Boolean processed = dragCallback.apply(evt, dragData.dragTarget, new Point2D(layoutX, layoutY));
+                    Boolean processed = dragCallback.apply(evt, dragData.dragTarget, new Point2D(deltaX, deltaY));
                     // 如果已经处理过，那么就不需要在处理了
                     if (processed) {
                         evt.consume();
