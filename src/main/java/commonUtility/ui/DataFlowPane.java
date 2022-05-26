@@ -225,7 +225,7 @@ public class DataFlowPane extends AnchorPane {
      * @return true：删除；false: 未删除或不存在
      */
     public boolean removeEntity(Region node) {
-        Node remove = entities.remove(node);
+        Node remove = entities.remove(node.hashCode());
         if (remove == null) {
             return false;
         }
@@ -259,6 +259,17 @@ public class DataFlowPane extends AnchorPane {
 
     /**
      * 删除背景组对象（删除对象及与其他组的联系）,不删除组对象
+     * @param groupName 待删除组对象
+     */
+    public void removeGroup(String groupName) {
+        Group group = groups.get(groupName);
+        if (group != null) {
+            removeGroup(group);
+        }
+    }
+
+    /**
+     * 删除背景组对象（删除对象及与其他组的联系）,不删除组对象
      * @param group 待删除组对象
      */
     public void removeGroup(Group group) {
@@ -269,14 +280,26 @@ public class DataFlowPane extends AnchorPane {
         groupBackGround.remove(group);
         // 内存：关系
         List<Group> removeGroupConnection = groupConnection.remove(group.getId());
-        removeGroupConnection.forEach(rel -> groupConnection.getOrDefault(rel.getId(),new ArrayList<>()).removeAll(removeGroupConnection));
+        if (removeGroupConnection !=null) {
+            removeGroupConnection.forEach(rel -> groupConnection.getOrDefault(rel.getId(),new ArrayList<>()).removeAll(removeGroupConnection));
+        }
         List<String> removeGroup = groupRelation.remove(group.getId());
-        removeGroup.forEach(rel -> groupRelation.getOrDefault(rel, new ArrayList<>()).remove(rel));
+        if (removeGroup != null) {
+            removeGroup.forEach(rel -> groupRelation.getOrDefault(rel, new ArrayList<>()).remove(rel));
+        }
+
+        // 界面：将组内对象添加到 绘图层
+        List<Node> nodes = group.getChildren().stream().toList();
+        List<Pair<Node, Point>> relativePositions = nodes.stream().map(node -> Pair.with(node,transformToRelativePosition(node, group, true))).toList();
+        relativePositions.forEach( objects -> {
+            Node node = objects.getValue0();
+            canvas.getChildren().add(node);
+            node.setLayoutX(objects.getValue1().getX());
+            node.setLayoutY(objects.getValue1().getY());
+        });
 
         // 界面：删除父类背景
         canvas.getChildren().remove(groupBK);
-        // 将组内对象添加到 绘图层
-        group.getChildren().forEach(canvas.getChildren()::add);
     }
 
 

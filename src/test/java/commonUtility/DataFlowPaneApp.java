@@ -42,7 +42,8 @@ public class DataFlowPaneApp extends Application {
         HBox.setHgrow(dataFlowPane, Priority.ALWAYS);
         Button button = new Button("relation");
         Button button2 = new Button("relation2");
-        hbox.getChildren().addAll(button,button2);
+        Button button3 = new Button("relation3");
+        hbox.getChildren().addAll(button,button2,button3);
         button.setOnMouseClicked(event -> {
             dataFlowPane.addToGroup("group1", buttton2, buttton1);
             dataFlowPane.addToGroup("group2", buttton3, buttton4);
@@ -51,6 +52,10 @@ public class DataFlowPaneApp extends Application {
             dataFlowPane.addEntityRelation(buttton1,buttton2, "label");
             dataFlowPane.addEntityRelation(buttton3,buttton4, "label");
             dataFlowPane.addEntityRelation(buttton1,buttton5, "label5");
+        });
+        button3.setOnMouseClicked(mouseEvent -> {
+            dataFlowPane.removeGroup("group1");
+            dataFlowPane.removeGroup("group2");
         });
         // from =>w WW .yi  I BA I.C O M
         AnchorPane parent = new AnchorPane(hbox);
