@@ -4,8 +4,6 @@ import aiconnector.connector.AIConnector;
 import aiconnector.connector.AIRectangle;
 import aiconnector.manager.AILayerManager;
 import aiconnector.manager.AIManagerItf;
-import javafx.application.Platform;
-import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
@@ -19,7 +17,9 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
+import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.lang3.function.TriFunction;
 import org.javatuples.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -27,23 +27,18 @@ import org.jetbrains.annotations.Nullable;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 /**
  * 数据流程图控件容器
  */
 public class DataFlowPane extends AnchorPane {
-    /**
-     * 控件容器显示名称
-     */
-    private String title;
 
+    @Getter
     private Pane canvas;
     /**
      * 代表一个一个的矩形
@@ -96,6 +91,10 @@ public class DataFlowPane extends AnchorPane {
      */
     @Setter
     private boolean showLabel = true;
+    /**
+     * canvas内部事件回调
+     */
+    TriFunction<MouseEvent, Node, Point2D, Boolean> eventCallback = (mouseEvent, node, point2D) -> false;
 
     /**
      * 获取下一个可用的group名称
@@ -138,9 +137,16 @@ public class DataFlowPane extends AnchorPane {
      * @return
      */
     public boolean onEventInCanvas(MouseEvent mouseEvent, Node node, Point2D point2D) {
-        return false;
+        return eventCallback.apply(mouseEvent, node, point2D);
     }
 
+    /**
+     * 注册canvas内部事件处理
+     * @param eventCallback
+     */
+    public void registerEventInCanvas(TriFunction<MouseEvent, Node, Point2D, Boolean> eventCallback) {
+        this.eventCallback = eventCallback;
+    }
     /**
      * 向指定点添加node对象.
      * @param node
