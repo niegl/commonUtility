@@ -122,7 +122,7 @@ public class DataFlowPane extends AnchorPane {
     private void init() {
         double prefWidth = this.getPrefWidth();
         double prefHeight = this.getPrefHeight();
-        Pair<ScrollPane, Pane> pivotZoom = PivotZoom.createPivotZoom(800, 600, this::onEventInCanvas);
+        Pair<ScrollPane, Pane> pivotZoom = PivotZoom.createPivotZoom(3508,2479,this::onEventInCanvas);
         ScrollPane value0 = pivotZoom.getValue0();
         canvas = pivotZoom.getValue1();
         this.getChildren().add(value0);
@@ -130,6 +130,8 @@ public class DataFlowPane extends AnchorPane {
         AnchorPane.setBottomAnchor(value0,0.);
         AnchorPane.setLeftAnchor(value0,0.);
         AnchorPane.setRightAnchor(value0,0.);
+
+        DragListener.enableDrop(canvas, canvas);
     }
 
     /**
